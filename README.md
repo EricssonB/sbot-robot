@@ -26,12 +26,13 @@ SBot is an enhanced Otto DIY robot with extended capabilities including voice re
 ## Features
 
 - 🎤 **Voice Recognition** - Control SBot with voice commands using DFRobot DF2301Q
+- 🎬 **Dual Modes** - Voice-activated OR auto-play demo mode
 - 💡 **NeoPixel LED Arms** - Expressive RGB lighting with smooth animations
-- 🤖 **Behavioral States** - Multiple emotional states (Dope, Chill, Alert)
+- 🤖 **Behavioral States** - Multiple emotional states (Dope, Chill)
 - 🦿 **Otto DIY Walking** - Full walking, dancing, and gesture capabilities
 - 🎵 **Sound Effects** - RTTTL melody playback and Otto sound library
 - 📱 **Serial Control** - Control via USB serial for debugging and manual control
-- 🔧 **Modular Architecture** - Clean, professional codebase with separated concerns
+- 🔧 **Professional Architecture** - Clean, modular PlatformIO project structure
 
 ## Hardware
 
@@ -88,7 +89,7 @@ SBot is an enhanced Otto DIY robot with extended capabilities including voice re
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/sbot-robot.git
+   git clone https://github.com/EricssonB/sbot-robot.git
    cd sbot-robot
    ```
 
@@ -113,6 +114,49 @@ SBot is an enhanced Otto DIY robot with extended capabilities including voice re
    pio device monitor
    ```
 
+## Build Modes
+
+SBot comes with **two firmware versions** that you can choose from:
+
+### 🎤 Voice Mode (`env:voice`) - Default
+**Requires: DFRobot DF2301Q voice recognition module**
+
+Waits for voice commands or serial input to trigger states. Perfect for interactive use.
+
+```bash
+# Build and upload voice mode
+pio run -e voice -t upload
+```
+
+### 🎬 Auto-Play Mode (`env:autoplay`)
+**No voice module needed**
+
+Plays the full startup sequence automatically when powered on. Great for demos and showcases.
+
+```bash
+# Build and upload auto-play mode
+pio run -e autoplay -t upload
+```
+
+### Switching Modes in VS Code
+
+1. Click the **PlatformIO icon** (alien head) in the sidebar
+2. Under **PROJECT TASKS**, expand the environment you want:
+   - `voice` → for voice-activated version
+   - `autoplay` → for auto-play demo version
+3. Click **Upload**
+
+Or use the environment switcher in the bottom status bar.
+
+### Available Build Environments
+
+| Environment | Board | Voice Module | Description |
+|-------------|-------|--------------|-------------|
+| `voice` | Uno | Required | Voice-activated (default) |
+| `autoplay` | Uno | Not needed | Auto-plays on startup |
+| `voice_mega` | Mega | Required | Voice mode for Arduino Mega |
+| `autoplay_mega` | Mega | Not needed | Auto-play for Arduino Mega |
+
 ### Dependencies
 
 All dependencies are automatically managed by PlatformIO:
@@ -124,54 +168,46 @@ All dependencies are automatically managed by PlatformIO:
 
 ## Usage
 
-### Serial Commands
+### Serial Commands (Both Modes)
 
 Connect via serial monitor at **115200 baud** and use these commands:
 
-| Command | Shortcut | Description |
-|---------|----------|-------------|
-| `dope` | `d` | Trigger excited celebration state |
-| `chill` | `c` | Trigger calm relaxation state |
-| `alert` | `a` | Trigger alert attention state |
-| `wave` | `w` | Wave arm gesture |
-| `home` | `h` | Return to home position |
-| `walk` | - | Walk forward 4 steps |
-| `dance` | - | Perform dance routine |
-| `rainbow` | - | Rainbow LED animation |
-| `status` | - | Show system status |
-| `help` | `?` | Show command list |
+| Command | Description |
+|---------|-------------|
+| `dope` | Run excited celebration state |
+| `chill` | Run calm relaxation state |
+| `startup` or `demo` | Run full startup sequence |
+| `home` | Return to home position |
+| `help` | Show available commands |
 
-### Voice Commands
+### Voice Commands (Voice Mode Only)
 
-After waking the voice module:
+After waking the voice module with your wake word:
 
-| Command ID | Trigger Phrase | Action |
-|------------|----------------|--------|
-| 5 | (Custom phrase) | Dope State |
-| 6 | (Custom phrase) | Chill State |
+| Command ID | Action |
+|------------|--------|
+| CMDID 5 | Triggers Dope State |
+| CMDID 6 | Triggers Chill State |
+
+> **Note:** Voice commands are configured in the DFRobot DF2301Q module. See DFRobot documentation for setting up custom wake words and command phrases.
 
 ## Architecture
 
 ```
 sbot-robot/
-├── platformio.ini        # PlatformIO configuration
+├── platformio.ini        # PlatformIO config (defines build modes)
 ├── include/
 │   ├── config.h          # Pin definitions & constants
 │   ├── colors.h          # RGB color definitions
 │   ├── melodies.h        # RTTTL melodies
-│   ├── led_controller.h  # LED controller interface
-│   ├── servo_controller.h # Arm servo interface
-│   ├── voice_controller.h # Voice recognition interface
-│   └── states.h          # State machine interface
+│   └── ...               # Other header files
 ├── src/
-│   ├── main.cpp          # Entry point & main loop
-│   ├── led_controller.cpp
-│   ├── servo_controller.cpp
-│   ├── voice_controller.cpp
-│   └── states.cpp
+│   └── main.cpp          # Main program (supports both modes)
 ├── lib/
-│   └── Otto/             # Otto DIY library
+│   ├── Otto/             # Otto DIY library
+│   └── PlayRtttl/        # RTTTL melody player
 ├── docs/
+│   ├── pinout.md         # Wiring reference
 │   └── images/           # Documentation images
 └── README.md
 ```
