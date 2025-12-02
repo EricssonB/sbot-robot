@@ -12,6 +12,9 @@
 // Oscillation parameters
 #define OSCILLATOR_PERIOD 50
 
+// Helper macro for degree to radian conversion
+#define DEG2RAD(deg) ((deg) * PI / 180.0)
+
 Otto::Otto() {
     for (int i = 0; i < 4; i++) {
         _servo_position[i] = 90;
@@ -469,6 +472,3 @@ void Otto::jump(int steps, int T) {
         home();
     }
 }
-
-// Helper macro
-#define DEG2RAD(deg) ((deg) * PI / 180.0)
