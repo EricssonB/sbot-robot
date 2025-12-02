@@ -51,28 +51,49 @@ void StateManager::runStartup() {
     setState(SBotState::STARTUP);
     DEBUG_PRINTLN(F("🚀 Running Startup Sequence..."));
     
-    // LED startup animation - rainbow crossfade
-    _leds.crossfade(Colors::BLACK, Colors::RED, 5);
-    _leds.crossfade(Colors::RED, Colors::GREEN, 5);
-    _leds.crossfade(Colors::GREEN, Colors::BLUE, 5);
-    _leds.crossfade(Colors::BLUE, Colors::WHITE, 5);
+    // From 0002: Full initialization sequence
+    // 1. Fade in Magenta
+    _leds.fadeIn(Colors::MAGENTA, 500);
     
-    // Arms initialization
-    _arms.home();
-    delay(200);
+    // 2. Arms initialization - lower position first
+    _arms.setPosition(15, 165);
+    delay(500);
+    
+    // 3. Raise arms with victory gesture
     _arms.raise();
-    delay(200);
+    delay(300);
     _arms.lower();
     
-    // Startup sound
+    // 4. Color sequence: Red -> Orange -> Yellow
+    _leds.crossfade(Colors::MAGENTA, Colors::RED, 5);
+    _leds.crossfade(Colors::RED, Colors::ORANGE, 10);
+    _leds.crossfade(Colors::ORANGE, Colors::YELLOW, 10);
+    
+    // 5. Yellow hold then back to Magenta
+    _leds.setColor(Colors::YELLOW);
+    delay(200);
+    _leds.crossfade(Colors::YELLOW, Colors::MAGENTA, 10);
+    
+    // 6. Arm adjustment during melody
+    _arms.setPosition(_arms.getLeftAngle() + 30, _arms.getRightAngle() - 30);
+    
+    // 7. Play celebration melody (Della)
     #if ENABLE_SOUND_EFFECTS
-    playRtttlBlockingPGM(_buzzerPin, (char*)MELODY_STARTUP);
+    playRtttlBlockingPGM(_buzzerPin, (char*)MELODY_DELLA);
     #endif
     
-    // Final LED state - dim white indicates ready
-    _leds.crossfade(Colors::WHITE, RGBColor(50, 50, 50), 10);
+    // 8. Final arm adjustments
+    _arms.setPosition(_arms.getLeftAngle() - 22, _arms.getRightAngle() + 22);
+    delay(500);
+    _arms.raise();
+    delay(300);
     
-    DEBUG_PRINTLN(F("✅ Startup Complete - SBot Ready!"));
+    // 9. Fade to half magenta-blue (chill indicator)
+    _leds.crossfade(Colors::MAGENTA, RGBColor(128, 0, 64), 20);
+    _arms.lower();
+    
+    DEBUG_PRINTLN(F("✅ Startup Sequence Complete!"));
+    DEBUG_PRINTLN(F("😌 Entering Idle State..."));
     setState(SBotState::IDLE);
 }
 
@@ -80,30 +101,41 @@ void StateManager::runDopeState() {
     setState(SBotState::DOPE);
     DEBUG_PRINTLN(F("🔥 Running Dope State..."));
     
-    // Fade in magenta
+    // From 001: dopeState() sequence
+    // 1. Fade in magenta
     _leds.fadeIn(Colors::MAGENTA, 500);
     
-    // Raise arms for celebration
+    // 2. Raise arms with victory gesture
     _arms.raise();
     delay(300);
+    _arms.lower();
     
-    // Color sequence through warm colors
+    // 3. Color crossfade sequence: Red -> Orange -> Yellow
     _leds.crossfade(Colors::MAGENTA, Colors::RED, 5);
     _leds.crossfade(Colors::RED, Colors::ORANGE, 10);
     _leds.crossfade(Colors::ORANGE, Colors::YELLOW, 10);
     
-    // Celebrate gesture
-    _arms.celebrate();
+    // 4. Hold yellow then crossfade back to magenta
+    _leds.setColor(Colors::YELLOW);
+    delay(100);
+    _leds.crossfade(Colors::YELLOW, Colors::MAGENTA, 10);
     
-    // Play celebration melody
+    // 5. Arm movement during updown
+    _arms.setPosition(_arms.getLeftAngle() + 30, _arms.getRightAngle() - 30);
+    delay(300);
+    
+    // 6. Play the Della melody
     #if ENABLE_SOUND_EFFECTS
     playRtttlBlockingPGM(_buzzerPin, (char*)MELODY_DELLA);
     #endif
     
-    // Final crossfade back to magenta
-    _leds.crossfade(Colors::YELLOW, Colors::MAGENTA, 10);
+    // 7. Final arm adjustments
+    _arms.setPosition(_arms.getLeftAngle() - 22, _arms.getRightAngle() + 22);
+    delay(500);
     
-    // Lower arms
+    // 8. Final raise/lower with fail gesture
+    _arms.raise();
+    delay(300);
     _arms.lower();
     
     DEBUG_PRINTLN(F("✅ Dope State Complete!"));
@@ -114,22 +146,24 @@ void StateManager::runChillState() {
     setState(SBotState::CHILL);
     DEBUG_PRINTLN(F("😌 Running Chill State..."));
     
-    // Set arms to relaxed position
+    // From 001: chillState() sequence
+    // 1. Set arms to relaxed position
+    DEBUG_PRINTLN(F("🎵 Setting arms position..."));
     _arms.setPosition(15, 175);
     delay(300);
     
-    // Fade to dim magenta (25% brightness)
-    _leds.fadeIn(Colors::MAGENTA_DIM, 1000);
+    // 2. Fade to 25% Magenta (64 out of 255)
+    DEBUG_PRINTLN(F("💜 Fading to 25% Magenta..."));
+    for (int i = 0; i <= 64; i += 2) {
+        _leds.setColor(i, 0, i);  // Magenta fade (Red + Blue)
+        delay(10);
+    }
     
-    // Breathing effect for calm atmosphere
-    _leds.breathe(Colors::MAGENTA_DIM, 2);
+    // 3. Hold chill state
+    delay(500);
     
-    // Play calming sound
-    #if ENABLE_SOUND_EFFECTS
-    playRtttlBlockingPGM(_buzzerPin, (char*)MELODY_SLEEP);
-    #endif
-    
-    // Return arms to home
+    // 4. Return arms to home
+    DEBUG_PRINTLN(F("🏡 Returning Home..."));
     _arms.home();
     
     DEBUG_PRINTLN(F("✅ Chill State Complete!"));
