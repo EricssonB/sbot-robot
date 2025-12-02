@@ -21,11 +21,12 @@
 *.bin
 *.map
 
-# Libraries that should be downloaded
-lib/*/
+# Libraries that should be downloaded (uncomment if using lib_deps only)
+# lib/*/
 
-# Keep Otto library if local
-!lib/Otto/
+# Local libraries are included
+# !lib/Otto/
+# !lib/PlayRtttl/
 
 # OS generated files
 .DS_Store

@@ -1,0 +1,9 @@
+{
+    "name": "PlayRtttl",
+    "version": "1.0.0",
+    "description": "Play RTTTL (Ring Tone Text Transfer Language) melodies",
+    "keywords": "rtttl, melody, buzzer, music, ringtone",
+    "license": "MIT",
+    "frameworks": "arduino",
+    "platforms": ["atmelavr", "atmelsam", "espressif32", "espressif8266"]
+}
