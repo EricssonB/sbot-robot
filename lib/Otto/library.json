@@ -1,0 +1,19 @@
+{
+    "name": "Otto",
+    "version": "1.0.0",
+    "description": "Otto DIY Robot Library - Walking, sounds, and gestures",
+    "keywords": "robot, otto, diy, servo, walking",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/OttoDIY/OttoDIYLib"
+    },
+    "authors": [
+        {
+            "name": "Otto DIY",
+            "url": "https://www.ottodiy.com/"
+        }
+    ],
+    "license": "GPL-3.0",
+    "frameworks": "arduino",
+    "platforms": ["atmelavr", "atmelsam"]
+}

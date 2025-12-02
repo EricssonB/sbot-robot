@@ -1,0 +1,68 @@
+# PlatformIO specific
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# IDE specific
+.vscode/.browse.c_cpp.db*
+.vscode/c_cpp_properties.json
+.vscode/launch.json
+.vscode/ipch
+.idea/
+*.swp
+*.swo
+*~
+
+# Compiled files
+*.o
+*.obj
+*.elf
+*.hex
+*.bin
+*.map
+
+# Libraries that should be downloaded
+lib/*/
+
+# Keep Otto library if local
+!lib/Otto/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Log files
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Build artifacts
+build/
+dist/
+
+# Documentation build
+docs/_build/
+
+# Python (if using any Python scripts)
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+ENV/
+
+# Node.js (if using any web tools)
+node_modules/
